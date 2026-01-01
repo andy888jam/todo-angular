@@ -1,0 +1,18 @@
+<!-- because this allows Angular to update the UI in a more fine-grained way where it doesn't have to check everything for every possible event that could occur anywhere in the application.
+ -->
+<!-- using zone.js -->
+<app-card>
+  <button [class.active]="selected" (click)="onSelectUser()">
+    <img [src]="imagePath" [alt]="user.name" />
+    <span>{{ user.name }}</span>
+  </button>
+</app-card>
+
+<!-- using signal in template -->
+<!-- () is used to read the value of the signal -->
+<!-- <div>
+  <button (click)="onSelectUser()">
+    <img [src]="imagePath()" [alt]="selectedUser().name" />
+    <span>{{ selectedUser().name }}</span>
+  </button>
+</div> -->
