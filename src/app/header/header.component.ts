@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  standalone: true, // angular 19 will be the default, so we can remove it
+  standalone: false, // angular 19 will be the default, so we can remove it
   styleUrl: './header.component.css', // or styleUrls: ['./header.component.css'] or styles,
 })
 export class HeaderComponent {}

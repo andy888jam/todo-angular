@@ -1,15 +1,11 @@
 import { Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { HeaderComponent } from './header/header.component';
-import { UserComponent } from './user/user.component';
+
 import { DUMMY_USERS } from './dummy-user';
-import { TasksComponent } from './tasks/tasks.component';
 
 // if you want to register/use a component in the html, you need to do that in ts file
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [HeaderComponent, UserComponent, TasksComponent, NgFor, NgIf],
+  standalone: false,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
