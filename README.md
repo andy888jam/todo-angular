@@ -1,3 +1,32 @@
+# Note
+
+### Concept
+Component setting in ts
+
+Module vs Standalone Component
+
+@for vs *ngFor(Old)
+
+@if vs *ngIf(Old)
+
+### Property binding
+parent to child
+
+ `<app-user
+        [user]="user"
+        [selected]="user.id === selectedUserId"
+      />`
+
+### Event binding
+child to parent
+
+$event is the default event variable
+
+ `<app-user
+          (select)="onSelectUser($event)"
+      />`
+
+
 # Essentials
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.2.

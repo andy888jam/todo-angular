@@ -9,6 +9,7 @@ import { DUMMY_USERS } from './dummy-user';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
+
 export class AppComponent {
   users = DUMMY_USERS;
   selectedUserId?: string;

@@ -4,6 +4,7 @@
     @for (user of users; track user.id) {
     <li>
       <!--  (select) is used to listen to the event emitted by the user component (our custom event)-->
+      <!-- $event is the default event variable） -->
       <app-user
         [user]="user"
         [selected]="user.id === selectedUserId"
@@ -20,7 +21,7 @@
   }
 </main>
 
-<!-- legacy angular way -->
+<!-- Old angular for and if -->
 <!-- <ul id="users">
   <li *ngFor="let user of users">
     <app-user [user]="user" (select)="onSelectUser($event)" />
