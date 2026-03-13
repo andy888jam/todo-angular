@@ -2,28 +2,82 @@
 
 ## app module
 
-### Concept
+### 1.Concept
 
-Component setting in ts
+#### Component
 
-Module vs Standalone Component
+- selector: which element on the screen will be replaced by the component
 
-@for vs \*ngFor(Old)
+- selector have to use at least one dash to separate the words, to not conflict with the html tags
 
-@if vs \*ngIf(Old)
+- template means the content of the component
 
-### Property binding
+- only very very short templates, we can use inline template, otherwise use templateUrl
 
-parent to child
+- standalone: true, means the component is standalone. When it's set to false, it will be treated as a module component
+
+#### Module vs Standalone Component
+
+declarations = 「宣告」這個元件屬於這個模組
+
+exports = 「暴露」這個元件給外部使用
+
+沒有 exports，即使你 import 了 SharedModule，也看不到 CardComponent
+
+```text
+📦 AppModule (根模組)
+│
+│  bootstrap: [AppComponent] ← 應用程式啟動入口
+│
+├── declarations (擁有的元件)
+│   ├── 🟢 AppComponent          (standalone: false)
+│   ├── 🟢 HeaderComponent       (standalone: false)
+│   └── 🟢 UserComponent         (standalone: false)
+│
+└── imports (匯入的模組)
+    ├── 📦 BrowserModule          (Angular 內建，提供 DatePipe 等)
+    │
+    ├── 📦 SharedModule ─────────────────────────────────────┐
+    │   │                                                    │
+    │   ├── declarations                                     │
+    │   │   └── 🟢 CardComponent  (standalone: false)        │
+    │   │                                                    │
+    │   └── exports: [CardComponent] ← 公開給外部使用 ────────┘
+    │
+    └── 📦 TasksModule ──────────────────────────────────────┐
+        │                                                    │
+        ├── declarations                                     │
+        │   ├── 🟢 TasksComponent    (standalone: false)     │
+        │   ├── 🟢 TaskComponent     (standalone: false)     │
+        │   └── 🟢 NewTaskComponent  (standalone: false)     │
+        │                                                    │
+        ├── exports: [TasksComponent] ← 公開給 AppModule ────┘
+        │
+        └── imports
+            ├── 📦 CommonModule   (提供 NgIf、NgFor 等)
+            ├── 📦 FormsModule    (提供 ngModel 雙向綁定)
+```
+
+#### @for vs \*ngFor(Old)
+
+#### @if vs \*ngIf(Old)
+
+<br>
+
+### 2.Property binding
+
+Purpose: parent to child
 
 `<app-user
         [user]="user"
         [selected]="user.id === selectedUserId"
       />`
 
-### Event binding
+<br>
 
-child to parent
+### 3.Event binding
+
+Purpose: child to parent
 
 $event is the default event variable
 
@@ -31,7 +85,11 @@ $event is the default event variable
           (select)="onSelectUser($event)"
       />`
 
-### Zone.js vs Signals
+<br>
+
+## user module
+
+### 1.Zone.js vs Signals
 
 | 特性     | 傳統機制 (Zone.js + Dirty Checking)                                          | 新機制 (Signals)                                             |
 | -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -39,9 +97,11 @@ $event is the default event variable
 | 精準度   | 較低。即使只有一個數字變了，可能也要重新檢查幾十個組件。                     | 極高（Fine-grained）。只更新與該 Signal 綁定的特定 UI 片段。 |
 | 性能開銷 | 較高，隨著應用規模擴大，檢查負擔會增加。                                     | 較低，跳過了不必要的檢查邏輯。                               |
 
-### 「傳統變數 + Getter」轉向「Signal + Computed」的核心進化
+<br>
 
-#### 傳統屬性定義
+### 2.「傳統變數 + Getter」轉向「Signal + Computed」的核心進化
+
+#### A. 傳統屬性定義
 
 ##### 宣告
 
@@ -67,7 +127,7 @@ get imagePath() {
 
 `this.selectedUser = DUMMY_USERS[randomIndex];`
 
-#### 新版signal屬性定義
+#### B. 新版signal屬性定義
 
 ##### 宣告
 
@@ -87,7 +147,9 @@ signal set method is used to update the value of the signal
 
 this.selectedUser_new.set(DUMMY_USERS[randomIndex]);
 
-### Interface vs Type
+<br>
+
+### 3. Interface vs Type
 
 outsource type: 將type移動到model中
 
@@ -109,7 +171,9 @@ interface can only define object type but type can define any type
   name: string;
 }`
 
-### @Input (父傳子Data In) vs @Output (子傳父Event Out)
+<br>
+
+### 4. @Input (父傳子Data In) vs @Output (子傳父Event Out)
 
 #### 舊版
 
@@ -144,3 +208,66 @@ Output
 `select_new = output<string>();`
 
 `this.select_new.emit(this.user.id);`
+
+## Tasks module
+
+### 1. ! ? 的使用
+
+- ! 我知道這個變數現在看起來沒給初始值，但我保證它在使用前一定會被賦值，你不要報錯
+- ? 當你寫 name?: string 時，這代表 name 的類型實際上是 string | undefined
+
+<br>
+
+### 2. new vs. Injection(動作)
+
+- new: `private service = new TasksService()`的話，每個 Component 都會擁有一份全新的、獨立的 TasksService 實體
+
+- Injection: 與其自己手動 new，不如叫 Angular 幫你 new， Angular 預設會以 「單例模式 (Singleton)」 運作。也就是說，不論你有多少個組件需要這個 Service，Angular 都只會建立 「同一個」 實體並分發給所有人。
+
+<br>
+
+### 3. Dependency Injection 依賴注入(完整的設計模式名稱)
+
+- 不需要去管 Service 是怎麼被產生的，你只需要在組件的 constructor 或使用 inject() 函式宣告：「我需要 TasksService 種類的東西」。
+
+- TasksService 就是組件 A 的「依賴」。沒有它，組件 A 就無法正常運作。
+
+```
+// 寫法 A：現代常用的 inject 函式
+
+private tasksService = inject(TasksService);
+
+// 寫法 B：傳統的 Constructor 注入
+
+constructor(private tasksService: TasksService) {}
+```
+
+<br>
+
+### 4. "private" placement
+
+```
+//private placement 1:
+private tasksService: TasksService;
+
+constructor( tasksService: TasksService) {
+  this.tasksService = tasksService;
+}
+
+//private placement 2: shortcut by Angular, will automatically create a property with the same name
+
+constructor(private tasksService: TasksService) {}
+```
+
+### 5. service
+
+- service is a class that provides a way to manage data and functionality.
+- @Injectable: tells Angular that this class should be injected into other services or components
+
+### 6. ngModel
+
+`[(ngModel)]="xxx"`
+
+- 必須匯入 FormsModule
+- 如果 ngModel 是用在一個 `<form> `標籤內，該表單控制元件必須加上 name 屬性
+- when using signal with [(ngModel)], you don't need () in the template

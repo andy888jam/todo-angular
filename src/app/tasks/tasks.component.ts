@@ -9,18 +9,22 @@ import { TasksService } from './tasks.service';
   styleUrl: './tasks.component.css',
 })
 export class TasksComponent {
-  // @Input({ required: true }) name!: string;
+  // ! is used to tell TypeScript that the value won't be null or undefined, so don't need to check it for now
   // ? means this property is optional and may be undefined
   @Input({ required: true }) userId!: string;
   @Input({ required: true }) name!: string;
+
+  // way 1 : use ?
+  // @Input() name?: string;
   // way2: use union
   // @Input() name: string | undefined;
+
   isAddingTask = false;
   //  if we use "new", then we will initialize the different instance in different components, which are not ideal
   // private tasksService = new TasksService();
 
-  // inject the service, tell Angular to create the instance of the service. And you cna use this one instance in different components to share the same data and functionality
-  // Dependency Injection: You tell Angular which type of value you need and Angular creates it and provides it as an argument
+  // "inject" (verb.) the service: tell Angular to create the instance of the service. And you can use this one instance in different components to share the same data and functionality
+  // Dependency Injection(Pattern Name): You tell Angular which type of value you need and Angular creates it and provides it as an argument
 
   //private placement 1:
   // private tasksService: TasksService;
